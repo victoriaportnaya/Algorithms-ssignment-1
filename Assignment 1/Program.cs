@@ -1,4 +1,6 @@
-﻿// implement stack 
+﻿// get expression 
+
+// implement stack 
 public class Stack 
 {
     private int top = 0;
@@ -68,4 +70,6 @@ public class Queue<T>
         return temp;
     }
 }
-// tokenizer
+// to RPN 
+
+// write result
