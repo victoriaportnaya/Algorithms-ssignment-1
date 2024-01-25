@@ -87,7 +87,7 @@ public class Queue<T>
 }
 // tokenizer
 public class Tokenizer
-
+{ 
     HashSet<char> operators = new HashSet<char>() {"+", "-", "*", "/", "(", ")"};
 
     public static List<string> Tokenize(string expression)
@@ -102,7 +102,7 @@ public class Tokenizer
                 if (currentToken.Length > 0)
                 {
                     tokens.Add(currentToken.ToString());
-                    currentToken.Clear();
+                    currentToken.Clear(); []
                 }
                 tokens.Add(c.ToString());
             }
@@ -122,3 +122,25 @@ public class Tokenizer
     }
 }
 
+// to PRN shunting yard 
+class OperatorsPriority
+{
+    private static Dictionary<char, int> priority = new Dictionary<char, int>
+    {
+        {'+', 1},
+        {'-', 1},
+        {'*', 2},
+        {'/', 2},
+    };
+
+    public static int GetPriority(char op)
+    {
+        if (priority.TryGetValue(op, out int priorityValue))
+        {
+            return priorityValue;
+        }
+
+        throw new ArgumentException($"Invalid operator!")
+    }
+
+}
