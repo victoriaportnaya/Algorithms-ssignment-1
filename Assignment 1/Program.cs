@@ -43,7 +43,7 @@ public class Stack<T>
         return stack[top - 1];
     }
 }
-// implement quue 
+// queue 
 public class Queue<T>
 {
     public T item;
@@ -88,7 +88,7 @@ public class Queue<T>
 // tokenizer
 public class Tokenizer
 { 
-    HashSet<char> operators = new HashSet<char>() {"+", "-", "*", "/", "(", ")"};
+    public static HashSet<char> operators = new HashSet<char> {"+", "-", "*", "/", "(", ")"};
 
     public static List<string> Tokenize(string expression)
     {
@@ -144,3 +144,61 @@ class OperatorsPriority
     }
 
 }
+
+
+public class ToRPN
+{
+    private Stack<string> stack;
+    private List<string> result;
+
+    public ToRPN()
+    {
+        stack = new Stack<string>();
+        result = new List<string>();
+    }
+    public List<string> Rpnizer(List<string> tokens)
+    {
+        foreach (var token in tokens)
+            {
+            if (int.TryParse(token, out _))
+                {
+                result.Add(token);
+                }
+            else if (Tokenizer.operators.Contains(token))
+            {
+                while (stack.Count > 0 && OperatorsPriority.GetPriority(stack.Peek()) > OperatorsPriority.GetPriority(token))
+                    {
+                    result.Add(stack.Pop());
+                    }
+                stack.Push(token);
+            }
+
+            else if (token == "(")
+            {
+                stack.Push(token);
+            }
+
+            else if (token == ")")
+            {
+                 while (stack.Peek() != "(" && stack.Count > 0)
+                {
+                    result.Add(stack.Pop())
+                }
+
+                 if (stack.Count > 0)
+                {
+                    stack.Pop();
+                }
+            }
+        }
+
+        while (stack.Count > 0)
+        {
+            result.Add(stack.Pop())
+        }
+
+        return result;
+    }
+}
+
+
