@@ -1,15 +1,6 @@
 ﻿using System;
 
-class Calculator
-{
-    static void GetExpression()
-    {
-        Console.WriteLine("Type your math expression >>");
-        string expression = Console.ReadLine();
-    }
 
-    // here stuff with calculator
-}
 // get expression 
 Console.WriteLine("Enter your math expression >>");
 string expression = Console.ReadLine();
@@ -94,6 +85,40 @@ public class Queue<T>
 
     public bool IsEmpty() => head == null;
 }
-// to RPN 
+// tokenizer
+public class Tokenizer
 
-// write result
+    HashSet<char> operators = new HashSet<char>() {"+", "-", "*", "/", "(", ")"};
+
+    public static List<string> Tokenize(string expression)
+    {
+        List<string> tokens = new List<string>();
+        StringBuilder currentToken = new StringBuilder();
+
+        foreach (char c in expression)
+        {
+            if (operators.Contains(c))
+            {
+                if (currentToken.Length > 0)
+                {
+                    tokens.Add(currentToken.ToString());
+                    currentToken.Clear();
+                }
+                tokens.Add(c.ToString());
+            }
+
+            else if (!char.IsWhiteSpace(c))
+            {
+                currentToken.Append(c);
+            }
+        }
+        if (currentToken.Length > 0)
+        {
+            tokens.Add(currentToken.ToString());   
+        }
+
+        return tokens;
+
+    }
+}
+
