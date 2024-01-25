@@ -55,6 +55,15 @@ public class Stack<T>
 // implement quue 
 public class Queue<T>
 {
+    public T item;
+    public Node next;
+
+    public Node(T item)
+    {
+        this.item = item;
+        this.next = null;
+    }
+
     private Node head;
     private Node tail;
 
@@ -62,7 +71,7 @@ public class Queue<T>
     {
         var temp = new Node(item);
 
-        if (head == null)
+        if (head = null)
             head = tail = temp;
         else
         {
@@ -74,13 +83,16 @@ public class Queue<T>
     public T Dequeue()
     {
         if (head == null)
-            throw new Exception("Queue Is Empty")
+            throw new Exception("Nothing to dequeue!")
+        T item = head.Item;
+        head = head.Next;
+        if (head == null)
+            tail = null;
 
-        var temp = head.item;
-        head = (Node)head.Next;
-
-        return temp;
+        return item;
     }
+
+    public bool IsEmpty() => head == null;
 }
 // to RPN 
 
