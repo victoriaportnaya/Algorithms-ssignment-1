@@ -1,43 +1,55 @@
-﻿// get expression 
+﻿using System;
+
+class Calculator
+{
+    static void GetExpression()
+    {
+        Console.WriteLine("Type your math expression >>");
+        string expression = Console.ReadLine();
+    }
+
+    // here stuff with calculator
+}
+// get expression 
+Console.WriteLine("Enter your math expression >>");
+string expression = Console.ReadLine();
 
 // implement stack 
-public class Stack 
+public class Stack<T>
 {
     private int top = 0;
-    private int size;
-    private int[] stack;
+    private int size = 15;
+    private T[] stack;
 
     public Stack(int size = 15)
     {
         this.size = size;
-        stack = new int[size];
+        stack = new T[size];
     }
 
-    public bool IsEmpty()
-    {
-        if (top == 0)
-            return true;
-        else
-            return false;
-    }
+    public bool IsEmpty() => top == 0;
 
-    public void Push(int element)
+    public void Push(T item)
     {
-        if (top > size)
-            throw new Exception("Stack Overflow");
-        stack[top] = element;
+        if (top >= size)
+            throw new Exception("Stack Overflow!")
+        stack[top] = item;
         top++;
     }
 
-    public int Pop()
+    public T Pop()
     {
         if (IsEmpty())
-            throw new Exception("Stack Overflow");
-        else
-        {
-            top--;
-            return stack[top];
-        }
+            throw new Exception("No cells available!")
+        top--;
+        return stack[top];
+    }
+
+    public T Peek()
+    {
+        if (IsEmpty())
+            throw new Exception("Nothing to peek!")
+        return stack[top - 1];
     }
 }
 // implement quue 
@@ -46,9 +58,9 @@ public class Queue<T>
     private Node head;
     private Node tail;
 
-    public void Enqueue(T element)
+    public void Enqueue(T item)
     {
-        var temp = new Node(element);
+        var temp = new Node(item);
 
         if (head == null)
             head = tail = temp;
@@ -64,7 +76,7 @@ public class Queue<T>
         if (head == null)
             throw new Exception("Queue Is Empty")
 
-        var temp = head.Element;
+        var temp = head.item;
         head = (Node)head.Next;
 
         return temp;
