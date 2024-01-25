@@ -1,15 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Tetx;
 
-
-// get expression 
-Console.WriteLine("Enter your math expression >>");
-string expression = Console.ReadLine();
 
 // implement stack 
 public class Stack<T>
 {
     private int top = 0;
-    private int size = 15;
+    private int size;
     private T[] stack;
 
     public Stack(int size = 15)
@@ -46,13 +44,16 @@ public class Stack<T>
 // queue 
 public class Queue<T>
 {
-    public T item;
-    public Node next;
-
-    public Node(T item)
+    private class Node
     {
-        this.item = item;
-        this.next = null;
+        public T item;
+        public Node Next;
+
+        public Node(T item)
+        {
+            this.Item = item;
+            this.Next = null;
+        }
     }
 
     private Node head;
@@ -74,7 +75,7 @@ public class Queue<T>
     public T Dequeue()
     {
         if (head == null)
-            throw new Exception("Nothing to dequeue!")
+            throw new Exception("Nothing to dequeue!");
         T item = head.Item;
         head = head.Next;
         if (head == null)
@@ -148,12 +149,12 @@ class OperatorsPriority
 
 public class ToRPN
 {
-    private Stack<string> stack;
+    private Stack<char> stack;
     private List<string> result;
 
     public ToRPN()
     {
-        stack = new Stack<string>();
+        stack = new Stack<char>();
         result = new List<string>();
     }
     public List<string> Rpnizer(List<string> tokens)
@@ -164,13 +165,14 @@ public class ToRPN
                 {
                 result.Add(token);
                 }
-            else if (Tokenizer.operators.Contains(token))
+            else if (Tokenizer.operators.Contains(token[0]))
             {
-                while (stack.Count > 0 && OperatorsPriority.GetPriority(stack.Peek()) > OperatorsPriority.GetPriority(token))
+                char operatorChar = token[0];
+                while (stack.Count > 0 && OperatorsPriority.GetPriority(stack.Peek()) > OperatorsPriority.GetPriority(operatorChar))
                     {
-                    result.Add(stack.Pop());
+                    result.Add(stack.Pop().ToString();
                     }
-                stack.Push(token);
+                stack.Push(operatorChar);
             }
 
             else if (token == "(")
@@ -182,7 +184,7 @@ public class ToRPN
             {
                  while (stack.Peek() != "(" && stack.Count > 0)
                 {
-                    result.Add(stack.Pop())
+                    result.Add(stack.Pop().ToString());
                 }
 
                  if (stack.Count > 0)
@@ -194,7 +196,7 @@ public class ToRPN
 
         while (stack.Count > 0)
         {
-            result.Add(stack.Pop())
+            result.Add(stack.Pop().ToString())
         }
 
         return result;
@@ -206,9 +208,9 @@ public class Evaluator
 {
     private Stack<int> newStack = new Stack<int>();
 
-    public int Calculator(string result)
+    public int Calculator(List<string> result)
     {
-        foreach (char ch in result)
+        foreach (var ch in result)
         {
             if (!Tokenizer.operators.Contains(ch))
                 
@@ -249,3 +251,17 @@ public class Evaluator
     }
 }
 
+// calculator in work
+public class TryCalculator
+{
+    public static void Main()
+    {
+        Console.WriteLine("Type your math expression >>");
+        string expression = Console.ReadLine();
+
+        var modified = ToRPN.Rpnizer(Tokenizer.Tokenize(expression));
+        int result = Evaluator.Calculator(modified);
+        Console.WriteLine($"Your math expression is equal to {result}");
+    }
+
+}
