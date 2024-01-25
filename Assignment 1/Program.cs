@@ -201,4 +201,51 @@ public class ToRPN
     }
 }
 
+// evaluate RPN
+public class Evaluator
+{
+    private Stack<int> newStack = new Stack<int>();
+
+    public int Calculator(string result)
+    {
+        foreach (char ch in result)
+        {
+            if (!Tokenizer.operators.Contains(ch))
+                
+                newStack.Push(int.Parse(ch.ToString()));
+
+            else
+              
+            {
+                int right = stack.Pop();
+                int left = stack.Pop();
+
+                switch(ch)
+                {
+                    case '+':
+                        stack.Push(left + right);
+                        break;
+                    case '-':
+                        stack.Push(left - right);
+                        break;
+                    case '*':
+                        stack.Push(left * right);
+                        break;
+                    case '/':
+                        if (right == 0)
+                            throw new InvalidOperationException("Cannot divide by zero!");
+
+                        stack.Push(left / right);
+                        break;
+                    default:
+                        throw new InvalidOperationException("The operation is not supported!");
+                }
+                    
+            }
+
+        }
+
+        return stack.Pop();
+    }
+}
 
