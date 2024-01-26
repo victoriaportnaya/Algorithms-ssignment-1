@@ -204,7 +204,12 @@ public class ToRPN
 // evaluate RPN
 public class Evaluator
 {
-    private Stack<int> newStack = new Stack<int>();
+    private Stack<int> newStack;
+
+    public Evaluator()
+    {
+        newStack = new Stack<int>();
+    }
 
     public int Calculate(List<string> result)
     {
@@ -217,25 +222,25 @@ public class Evaluator
             else
               
             {
-                int right = stack.Pop();
-                int left = stack.Pop();
+                int right = newStack.Pop();
+                int left = newStack.Pop();
 
                 switch(ch)
                 {
                     case '+':
-                        stack.Push(left + right);
+                       newStack.Push(left + right);
                         break;
                     case '-':
-                        stack.Push(left - right);
+                        newStack.Push(left - right);
                         break;
                     case '*':
-                        stack.Push(left * right);
+                        newStack.Push(left * right);
                         break;
                     case '/':
                         if (right == 0)
                             throw new InvalidOperationException("Cannot divide by zero!");
 
-                        stack.Push(left / right);
+                        newStack.Push(left / right);
                         break;
                     default:
                         throw new InvalidOperationException("The operation is not supported!");
@@ -245,9 +250,10 @@ public class Evaluator
 
         }
 
-        if (stack.Count != 1)
+        if (newStack.Size() < 2)
             throw new InvalidOperationException("Something wrong with your expression!");
-        return stack.Pop();
+        
+        return newStack.Pop();
     }
 }
 
