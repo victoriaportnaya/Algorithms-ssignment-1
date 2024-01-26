@@ -260,7 +260,7 @@ public class TryCalculator
         string expression = Console.ReadLine();
         var tokens = Tokenizer.Tokenize(expression);
         var rpnized = new ToRPN();
-        var rpntokens = ToRPN.Rpnize(tokens);
+        var rpntokens = ToRPN.Rpnizer(tokens);
 
         var evaluator = new Evaluator();
         int result = Evaluator.Calculate(rpntokens);
