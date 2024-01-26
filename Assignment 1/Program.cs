@@ -107,7 +107,7 @@ public class Queue<T>
 // tokenizer
 public class Tokenizer
 { 
-    public static HashSet<char> Operators = new HashSet<char> {"+", "-", "*", "/", "(", ")"};
+    public static HashSet<char> Operators = new HashSet<char> {'+', '-', '*', '/', ')', '('};
 
     public static Queue<string> Tokenize(string expression)
     {
@@ -188,7 +188,7 @@ public class ToRPN
                 char operatorChar = token[0];
                 while (stack.Count > 0 && OperatorsPriority.GetPriority(stack.Peek()) > OperatorsPriority.GetPriority(operatorChar))
                     {
-                    result.Add(stack.Pop().ToString());
+                    result.Enqueue(stack.Pop().ToString());
                     }
                 stack.Push(operatorChar);
             }
@@ -231,7 +231,7 @@ public class Evaluator
         newStack = new Stack<int>();
     }
 
-    public int Calculate(List<string> result)
+    public int Calculate(Queue<string> result)
     {
         foreach (var ch in result)
         {
