@@ -3,6 +3,26 @@ using System.Collections.Generic;
 using System.Text;
 
 
+// calculator in work
+public class TryCalculator
+{
+    public static void Main()
+    {
+        Console.WriteLine("Type your math expression >>");
+        string expression = Console.ReadLine();
+        var tokens = Tokenizer.Tokenize(expression);
+        var rpnized = new ToRPN();
+        var rpntokens = ToRPN.Rpnizer(tokens);
+
+        var evaluator = new Evaluator();
+        int result = Evaluator.Calculate(rpntokens);
+
+        Console.WriteLine($"Your math expression is equal to {result}");
+    }
+
+}
+
+
 // implement stack 
 public class Stack<T>
 {
@@ -89,9 +109,9 @@ public class Tokenizer
 { 
     public static HashSet<char> Operators = new HashSet<char> {"+", "-", "*", "/", "(", ")"};
 
-    public static List<string> Tokenize(string expression)
+    public static Queue<string> Tokenize(string expression)
     {
-        List<string> tokens = new List<string>();
+        List<Queue> tokens = new Queue<string>();
         StringBuilder currentToken = new StringBuilder();
 
         foreach (char c in expression)
@@ -100,10 +120,10 @@ public class Tokenizer
             {
                 if (currentToken.Length > 0)
                 {
-                    tokens.Add(currentToken.ToString());
+                    tokens.Enqueue(currentToken.ToString());
                     currentToken.Clear(); 
                 }
-                tokens.Add(c.ToString());
+                tokens.Enqueue(c.ToString());
             }
 
             else if (!char.IsWhiteSpace(c))
@@ -113,7 +133,7 @@ public class Tokenizer
         }
         if (currentToken.Length > 0)
         {
-            tokens.Add(currentToken.ToString());   
+            tokens.Enqueue(currentToken.ToString());   
         }
 
         return tokens;
@@ -148,20 +168,20 @@ class OperatorsPriority
 public class ToRPN
 {
     private Stack<char> stack;
-    private List<string> result;
+    private Queue<string> result;
 
     public ToRPN()
     {
         stack = new Stack<char>();
-        result = new List<string>();
+        result = new Queue<string>();
     }
-    public List<string> Rpnizer(List<string> tokens)
+    public Queue<string> Rpnizer(Queue<string> tokens)
     {
         foreach (var token in tokens)
             {
             if (int.TryParse(token, out _))
                 {
-                result.Add(token);
+                result.Enqueue(token);
                 }
             else if (Tokenizer.Operators.Contains(token[0]))
             {
@@ -182,7 +202,7 @@ public class ToRPN
             {
                  while (stack.Peek() != "(" && stack.Count > 0)
                 {
-                    result.Add(stack.Pop().ToString());
+                    result.Enqueue(stack.Pop().ToString());
                 }
 
                  if (stack.Count > 0)
@@ -194,7 +214,7 @@ public class ToRPN
 
         while (stack.Count > 0)
         {
-            result.Add(stack.Pop().ToString());
+            result.Enqueue(stack.Pop().ToString());
         }
 
         return result;
@@ -257,24 +277,3 @@ public class Evaluator
     }
 }
 
-// calculator in work
-public class TryCalculator
-{
-    public static void Main()
-    {
-        Console.WriteLine("Type your math expression >>");
-        string expression = Console.ReadLine();
-        var tokens = Tokenizer.Tokenize(expression);
-        var rpnized = new ToRPN();
-        var rpntokens = ToRPN.Rpnizer(tokens);
-
-        var evaluator = new Evaluator();
-        int result = Evaluator.Calculate(rpntokens);
-        
-        Console.WriteLine($"Your math expression is equal to {result}");
-    }
-
-}
-
-// start calculator
-TryCalculator.Main();
