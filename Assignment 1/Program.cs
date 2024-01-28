@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 
@@ -11,11 +12,11 @@ public class TryCalculator
         Console.WriteLine("Type your math expression >>");
         string expression = Console.ReadLine();
         var tokens = Tokenizer.Tokenize(expression);
-        var rpnized = new ToRPN();
-        var rpntokens = ToRPN.Rpnizer(tokens);
+        var rpn = new ToRPN();
+        var rpntokens = rpn.Rpnizer(tokens);
 
         var evaluator = new Evaluator();
-        int result = Evaluator.Calculate(rpntokens);
+        int result = evaluator.Calculate(rpntokens);
 
         Console.WriteLine($"Your math expression is equal to {result}");
     }
@@ -23,7 +24,7 @@ public class TryCalculator
 }
 
 
-// implement stack 
+///implement stack 
 public class Stack<T>
 {
     private int top = 0;
@@ -60,12 +61,15 @@ public class Stack<T>
     }
 }
 // queue 
-public class Queue<T>
+public class Queue<T> : IEnumerable<T>
 {
+    private Node? head;
+    private Node? tail;
+
     private class Node
     {
         public T item;
-        public Node Next;
+        public Node? Next;
 
         public Node(T item)
         {
@@ -74,14 +78,19 @@ public class Queue<T>
         }
     }
 
-    private Node head;
-    private Node tail;
+  
+    public Queue()
+    {
+        head = null;
+        tail = null;
+
+    }
 
     public void Enqueue(T item)
     {
         var temp = new Node(item);
 
-        if (head = null)
+        if (head == null)
             head = tail = temp;
         else
         {
@@ -94,8 +103,10 @@ public class Queue<T>
     {
         if (head == null)
             throw new Exception("Nothing to dequeue!");
+
         T item = head.item;
         head = head.Next;
+
         if (head == null)
             tail = null;
 
@@ -103,6 +114,23 @@ public class Queue<T>
     }
 
     public bool IsEmpty() => head == null;
+
+    public IEnumerator<T> GetEnumerator()
+    {
+        Node current = head;
+        while (current != null)
+        {
+            yield return current.item;
+            current = current.Next;
+        }
+    }
+
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+        return GetEnumerator();
+    }
+
+   
 }
 // tokenizer
 public class Tokenizer
@@ -111,7 +139,7 @@ public class Tokenizer
 
     public static Queue<string> Tokenize(string expression)
     {
-        List<Queue> tokens = new Queue<string>();
+        Queue<string> tokens = new Queue<string>();
         StringBuilder currentToken = new StringBuilder();
 
         foreach (char c in expression)
@@ -200,12 +228,12 @@ public class ToRPN
 
             else if (token == ")")
             {
-                 while (stack.Peek() != "(" && stack.Count > 0)
+                 while (stack.Peek() != "(")
                 {
                     result.Enqueue(stack.Pop().ToString());
                 }
 
-                 if (stack.Count > 0)
+                 if (!stack.IsEmpty())
                 {
                     stack.Pop();
                 }
@@ -270,7 +298,7 @@ public class Evaluator
 
         }
 
-        if (newStack.Size() < 2)
+        if (newStack.IsEmpty() || !newStack.IsEmpty())
             throw new InvalidOperationException("Something wrong with your expression!");
         
         return newStack.Pop();
