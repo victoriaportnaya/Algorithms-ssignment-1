@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
-using System.Text;
-
 
 // calculator in work
 public class TryCalculator
@@ -61,7 +58,7 @@ public class Stack<T>
     }
 }
 // queue 
-public class Queue<T> : IEnumerable<T>
+public class Queue<T>: IEnumerable<T>
 {
     private Node? head;
     private Node? tail;
@@ -78,7 +75,7 @@ public class Queue<T> : IEnumerable<T>
         }
     }
 
-  
+
     public Queue()
     {
         head = null;
@@ -117,7 +114,7 @@ public class Queue<T> : IEnumerable<T>
 
     public IEnumerator<T> GetEnumerator()
     {
-        Node current = head;
+        Node? current = head;
         while (current != null)
         {
             yield return current.item;
@@ -127,15 +124,15 @@ public class Queue<T> : IEnumerable<T>
 
     IEnumerator IEnumerable.GetEnumerator()
     {
-        return GetEnumerator();
+        return this.GetEnumerator();
     }
 
-   
+
 }
 // tokenizer
 public class Tokenizer
-{ 
-    public static HashSet<char> Operators = new HashSet<char> {'+', '-', '*', '/', ')', '('};
+{
+    public static HashSet<char> Operators = new HashSet<char> { '+', '-', '*', '/', ')', '(' };
 
     public static Queue<string> Tokenize(string expression)
     {
@@ -149,7 +146,7 @@ public class Tokenizer
                 if (currentToken.Length > 0)
                 {
                     tokens.Enqueue(currentToken.ToString());
-                    currentToken.Clear(); 
+                    currentToken.Clear();
                 }
                 tokens.Enqueue(c.ToString());
             }
@@ -161,7 +158,7 @@ public class Tokenizer
         }
         if (currentToken.Length > 0)
         {
-            tokens.Enqueue(currentToken.ToString());   
+            tokens.Enqueue(currentToken.ToString());
         }
 
         return tokens;
@@ -206,18 +203,18 @@ public class ToRPN
     public Queue<string> Rpnizer(Queue<string> tokens)
     {
         foreach (var token in tokens)
-            {
+        {
             if (int.TryParse(token, out _))
-                {
+            {
                 result.Enqueue(token);
-                }
+            }
             else if (Tokenizer.Operators.Contains(token[0]))
             {
                 char operatorChar = token[0];
                 while (stack.Count > 0 && OperatorsPriority.GetPriority(stack.Peek()) > OperatorsPriority.GetPriority(operatorChar))
-                    {
+                {
                     result.Enqueue(stack.Pop().ToString());
-                    }
+                }
                 stack.Push(operatorChar);
             }
 
@@ -228,12 +225,12 @@ public class ToRPN
 
             else if (token == ")")
             {
-                 while (stack.Peek() != "(")
+                while (stack.Peek() != "(")
                 {
                     result.Enqueue(stack.Pop().ToString());
                 }
 
-                 if (!stack.IsEmpty())
+                if (!stack.IsEmpty())
                 {
                     stack.Pop();
                 }
@@ -264,19 +261,19 @@ public class Evaluator
         foreach (var ch in result)
         {
             if (int.TryParse(ch, out int number))
-                
+
                 newStack.Push(number);
 
             else
-              
+
             {
                 int right = newStack.Pop();
                 int left = newStack.Pop();
 
-                switch(ch)
+                switch (ch)
                 {
                     case '+':
-                       newStack.Push(left + right);
+                        newStack.Push(left + right);
                         break;
                     case '-':
                         newStack.Push(left - right);
@@ -293,14 +290,14 @@ public class Evaluator
                     default:
                         throw new InvalidOperationException("The operation is not supported!");
                 }
-                    
+
             }
 
         }
 
-        if (newStack.IsEmpty() || !newStack.IsEmpty())
+        if (newStack.Count > 1)
             throw new InvalidOperationException("Something wrong with your expression!");
-        
+
         return newStack.Pop();
     }
 }
