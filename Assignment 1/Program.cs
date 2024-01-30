@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Text;
 using System.Collections.Generic;
 
 // calculator in work
@@ -7,7 +8,7 @@ public class TryCalculator
     public static void Main()
     {
         Console.WriteLine("Type your math expression >>");
-        string expression = Console.ReadLine();
+        string expression = Console.ReadLine() ?? string.Empty;
         var tokens = Tokenizer.Tokenize(expression);
         var rpn = new ToRPN();
         var rpntokens = rpn.Rpnizer(tokens);
@@ -58,7 +59,7 @@ public class Stack<T>
     }
 }
 // queue 
-public class Queue<T>: IEnumerable<T>
+public class MyQueue<T>: IEnumerable<T>
 {
     private Node? head;
     private Node? tail;
@@ -76,7 +77,7 @@ public class Queue<T>: IEnumerable<T>
     }
 
 
-    public Queue()
+    public MyQueue()
     {
         head = null;
         tail = null;
@@ -122,11 +123,10 @@ public class Queue<T>: IEnumerable<T>
         }
     }
 
-    IEnumerator IEnumerable.GetEnumerator()
+    System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
     {
         return this.GetEnumerator();
     }
-
 
 }
 // tokenizer
@@ -134,9 +134,9 @@ public class Tokenizer
 {
     public static HashSet<char> Operators = new HashSet<char> { '+', '-', '*', '/', ')', '(' };
 
-    public static Queue<string> Tokenize(string expression)
+    public static MyQueue<string> Tokenize(string expression)
     {
-        Queue<string> tokens = new Queue<string>();
+        MyQueue<string> tokens = new MyQueue<string>();
         StringBuilder currentToken = new StringBuilder();
 
         foreach (char c in expression)
@@ -193,14 +193,14 @@ class OperatorsPriority
 public class ToRPN
 {
     private Stack<char> stack;
-    private Queue<string> result;
+    private MyQueue<string> result;
 
     public ToRPN()
     {
         stack = new Stack<char>();
-        result = new Queue<string>();
+        result = new MyQueue<string>();
     }
-    public Queue<string> Rpnizer(Queue<string> tokens)
+    public MyQueue<string> Rpnizer(MyQueue<string> tokens)
     {
         foreach (var token in tokens)
         {
@@ -211,21 +211,21 @@ public class ToRPN
             else if (Tokenizer.Operators.Contains(token[0]))
             {
                 char operatorChar = token[0];
-                while (stack.Count > 0 && OperatorsPriority.GetPriority(stack.Peek()) > OperatorsPriority.GetPriority(operatorChar))
+                while (!stack.IsEmpty() && OperatorsPriority.GetPriority(stack.Peek()) > OperatorsPriority.GetPriority(operatorChar))
                 {
                     result.Enqueue(stack.Pop().ToString());
                 }
                 stack.Push(operatorChar);
             }
 
-            else if (token == "(")
+            else if (token[0] == '(')
             {
                 stack.Push(token[0]);
             }
 
-            else if (token == ")")
+            else if (token[0] == ')')
             {
-                while (stack.Peek() != "(")
+                while (stack.Peek() != '(')
                 {
                     result.Enqueue(stack.Pop().ToString());
                 }
@@ -237,7 +237,7 @@ public class ToRPN
             }
         }
 
-        while (stack.Count > 0)
+        while (!stack.IsEmpty())
         {
             result.Enqueue(stack.Pop().ToString());
         }
@@ -256,7 +256,7 @@ public class Evaluator
         newStack = new Stack<int>();
     }
 
-    public int Calculate(Queue<string> result)
+    public int Calculate(MyQueue<string> result)
     {
         foreach (var ch in result)
         {
@@ -272,16 +272,16 @@ public class Evaluator
 
                 switch (ch)
                 {
-                    case '+':
+                    case "+":
                         newStack.Push(left + right);
                         break;
-                    case '-':
+                    case "-":
                         newStack.Push(left - right);
                         break;
-                    case '*':
+                    case "*":
                         newStack.Push(left * right);
                         break;
-                    case '/':
+                    case "/":
                         if (right == 0)
                             throw new InvalidOperationException("Cannot divide by zero!");
 
@@ -294,9 +294,6 @@ public class Evaluator
             }
 
         }
-
-        if (newStack.Count > 1)
-            throw new InvalidOperationException("Something wrong with your expression!");
 
         return newStack.Pop();
     }
