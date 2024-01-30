@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Text;
 using System.Collections.Generic;
+using System.Data;
 
 // calculator in work
 public class TryCalculator
@@ -39,6 +40,7 @@ public class Stack<T>
 
     public bool IsEmpty() => top == 0;
 
+    public int Count => top;
     public void Push(T item)
     {
         if (top >= stack.Length)
@@ -63,7 +65,7 @@ public class Stack<T>
     }
 }
 // queue 
-public class MyQueue<T>: IEnumerable<T>
+public class MyQueue<T> : IEnumerable<T>
 {
     private Node? head;
     private Node? tail;
@@ -179,6 +181,8 @@ class OperatorsPriority
         {'-', 1},
         {'*', 2},
         {'/', 2},
+        {')', 0},
+        {'(', 0}
     };
 
     public static int GetPriority(char op)
@@ -204,6 +208,7 @@ public class ToRPN
         stack = new Stack<char>();
         result = new MyQueue<string>();
     }
+
     public MyQueue<string> Rpnizer(MyQueue<string> tokens)
     {
         foreach (var token in tokens)
@@ -215,40 +220,51 @@ public class ToRPN
             else if (Tokenizer.Operators.Contains(token[0]))
             {
                 char operatorChar = token[0];
-                while (!stack.IsEmpty() && OperatorsPriority.GetPriority(stack.Peek()) > OperatorsPriority.GetPriority(operatorChar))
-                {
-                    result.Enqueue(stack.Pop().ToString());
-                }
-                stack.Push(operatorChar);
-            }
 
-            else if (token[0] == '(')
-            {
-                stack.Push(token[0]);
-            }
 
-            else if (token[0] == ')')
-            {
-                while (stack.Peek() != '(')
+                if (operatorChar == '(')
                 {
-                    result.Enqueue(stack.Pop().ToString());
+                    stack.Push(operatorChar);
                 }
 
-                if (!stack.IsEmpty())
+                else if (operatorChar == ')')
                 {
-                    stack.Pop();
+                    while (!stack.IsEmpty() && stack.Peek() != '(')
+                    {
+                        result.Enqueue(stack.Pop().ToString());
+                    }
+
+                    if (!stack.IsEmpty() && stack.Peek() == '(')
+                    {
+                        stack.Pop();
+                    }
+                }
+
+                else
+                {
+                    while (!stack.IsEmpty() && (OperatorsPriority.GetPriority(stack.Peek()) >=
+                                                OperatorsPriority.GetPriority(operatorChar)))
+                    {
+                        result.Enqueue(stack.Pop().ToString());
+                    }
+
+                    stack.Push(operatorChar);
                 }
             }
         }
+
 
         while (!stack.IsEmpty())
         {
             result.Enqueue(stack.Pop().ToString());
         }
 
+
         return result;
     }
 }
+
+
 
 // evaluate RPN
 public class Evaluator
@@ -269,8 +285,13 @@ public class Evaluator
                 newStack.Push(number);
 
             else
-
             {
+                if (newStack.Count < 2)
+                {
+                    throw new InvalidOperationException("Operands");
+                }
+
+
                 int right = newStack.Pop();
                 int left = newStack.Pop();
 
@@ -296,10 +317,23 @@ public class Evaluator
                 }
 
             }
-
         }
 
+        if (newStack.Count != 1)
+        {
+            throw new InvalidOperationException("Invalid!");
+        }
         return newStack.Pop();
+
+
+
+
+
     }
 }
+
+
+
+
+
 
