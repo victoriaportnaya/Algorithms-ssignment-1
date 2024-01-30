@@ -12,6 +12,10 @@ public class TryCalculator
         var tokens = Tokenizer.Tokenize(expression);
         var rpn = new ToRPN();
         var rpntokens = rpn.Rpnizer(tokens);
+        foreach (var token in rpntokens)
+        {
+            Console.Write(token);
+        }
 
         var evaluator = new Evaluator();
         int result = evaluator.Calculate(rpntokens);
