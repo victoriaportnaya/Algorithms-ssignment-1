@@ -19,7 +19,7 @@ public class TryCalculator
         }
 
         var evaluator = new Evaluator();
-        int result = evaluator.Calculate(rpntokens);
+        double result = evaluator.Calculate(rpntokens);
 
         Console.WriteLine($"Your math expression is equal to {result}");
     }
@@ -213,7 +213,7 @@ public class ToRPN
     {
         foreach (var token in tokens)
         {
-            if (int.TryParse(token, out _))
+            if (double.TryParse(token, out double _))
             {
                 result.Enqueue(token);
             }
@@ -269,18 +269,18 @@ public class ToRPN
 // evaluate RPN
 public class Evaluator
 {
-    private Stack<int> newStack;
+    private Stack<double> newStack;
 
     public Evaluator()
     {
-        newStack = new Stack<int>();
+        newStack = new Stack<double>();
     }
 
-    public int Calculate(MyQueue<string> result)
+    public double Calculate(MyQueue<string> result)
     {
         foreach (var ch in result)
         {
-            if (int.TryParse(ch, out int number))
+            if (double.TryParse(ch, out double number))
 
                 newStack.Push(number);
 
@@ -292,8 +292,8 @@ public class Evaluator
                 }
 
 
-                int right = newStack.Pop();
-                int left = newStack.Pop();
+                double right = newStack.Pop();
+                double left = newStack.Pop();
 
                 switch (ch)
                 {
